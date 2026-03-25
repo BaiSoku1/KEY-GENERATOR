@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Key Generator System - Premium Access</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <div class="icon-wrapper">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h1>Key Generator System</h1>
+                <p>Generate & Manage Your Access Keys</p>
+            </div>
+
+            <div class="key-section">
+                <div class="key-display">
+                    <div class="key-label">
+                        <i class="fas fa-lock"></i>
+                        <span>Your Generated Key</span>
+                    </div>
+                    <div class="key-value" id="generatedKey">
+                        <span class="placeholder">Click Generate to create key</span>
+                    </div>
+                    <div class="key-actions">
+                        <button id="copyKeyBtn" class="action-btn copy-btn" disabled>
+                            <i class="fas fa-copy"></i>
+                            <span>Copy</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="duration-section">
+                    <div class="duration-label">
+                        <i class="far fa-clock"></i>
+                        <span>Key Validity Duration</span>
+                    </div>
+                    <div class="duration-options">
+                        <button class="duration-btn" data-days="1">1 Day</button>
+                        <button class="duration-btn" data-days="3">3 Days</button>
+                        <button class="duration-btn" data-days="7">7 Days</button>
+                        <button class="duration-btn" data-days="30">30 Days</button>
+                        <button class="duration-btn" data-days="0">Permanent</button>
+                    </div>
+                    <div class="selected-duration" id="selectedDuration">
+                        <i class="fas fa-info-circle"></i>
+                        <span id="durationText">No duration selected</span>
+                    </div>
+                </div>
+
+                <div class="expiry-info" id="expiryInfo" style="display: none;">
+                    <div class="expiry-card">
+                        <i class="fas fa-hourglass-half"></i>
+                        <div class="expiry-details">
+                            <span class="expiry-label">Key Expires On:</span>
+                            <span class="expiry-date" id="expiryDate"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="generateKeyBtn" class="btn btn-primary">
+                        <i class="fas fa-sync-alt"></i>
+                        Generate Key
+                    </button>
+                    <button id="resetKeyBtn" class="btn btn-secondary">
+                        <i class="fas fa-trash-alt"></i>
+                        Reset Key
+                    </button>
+                </div>
+            </div>
+
+            <div class="target-section">
+                <div class="target-header">
+                    <i class="fas fa-link"></i>
+                    <h3>Target Link Integration</h3>
+                </div>
+                <div class="target-content">
+                    <p class="target-desc">After generating your key, you'll be redirected to access the content through our secure gateway.</p>
+                    
+                    <div class="link-options">
+                        <div class="link-option active" data-type="linkvertise">
+                            <i class="fab fa-linkvertise"></i>
+                            <span>Linkvertise</span>
+                        </div>
+                        <div class="link-option" data-type="shorte">
+                            <i class="fas fa-shortcode"></i>
+                            <span>Shorte.st</span>
+                        </div>
+                        <div class="link-option" data-type="custom">
+                            <i class="fas fa-globe"></i>
+                            <span>Custom Link</span>
+                        </div>
+                    </div>
+
+                    <div class="custom-link-input" id="customLinkInput" style="display: none;">
+                        <input type="text" id="customUrl" placeholder="Enter your custom URL (e.g., https://example.com)" class="custom-input">
+                    </div>
+
+                    <div class="target-link-display">
+                        <div class="link-info">
+                            <i class="fas fa-arrow-right"></i>
+                            <span id="targetLinkText">Linkvertise Gateway</span>
+                        </div>
+                        <button id="visitTargetBtn" class="btn-target" disabled>
+                            <i class="fas fa-external-link-alt"></i>
+                            Access Content (Requires Key)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="toast-message" id="toast">
+                <i class="fas fa-check-circle"></i>
+                <span id="toastMessage">Message</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Key Generator System | Secure Access Management</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+  </html>
