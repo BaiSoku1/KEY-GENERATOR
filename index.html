@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>LURAPH-STYLE VM OBFUSCATOR · ADVANCED LUA VM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luraph-Style Obfuscator | VM-Based Lua Protector</title>
     <style>
         * {
             margin: 0;
@@ -12,550 +12,628 @@
         }
 
         body {
-            background: radial-gradient(ellipse at 10% 20%, #0a0a0f, #020408);
-            font-family: 'Courier New', 'Fira Code', 'Share Tech Mono', monospace;
-            min-height: 100vh;
-            padding: 1.5rem;
-            position: relative;
+            background: #0a0c12;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            padding: 20px;
+            color: #00ffaa;
         }
 
-        /* matrix rain effect on background */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(0deg, 
-                rgba(0, 255, 100, 0.015) 0px, 
-                rgba(0, 255, 100, 0.015) 2px, 
-                transparent 2px, 
-                transparent 8px);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .luraph-container {
-            max-width: 1600px;
+        .container {
+            max-width: 1400px;
             margin: 0 auto;
-            background: rgba(6, 12, 18, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid #00ffaa55;
-            border-radius: 24px;
-            box-shadow: 0 0 40px rgba(0, 255, 170, 0.15), inset 0 0 20px rgba(0, 255, 170, 0.05);
-            position: relative;
-            z-index: 2;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 2px solid #00ffaa;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #00ffaa;
+        }
+
+        .header p {
+            color: #88ffcc;
+            font-size: 12px;
+        }
+
+        /* Main Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* Panel */
+        .panel {
+            background: #11161f;
+            border: 1px solid #00ffaa33;
+            border-radius: 8px;
             overflow: hidden;
         }
 
-        .header-luraph {
-            padding: 1.2rem 2rem;
-            background: linear-gradient(90deg, #021008, #031a10);
-            border-bottom: 2px solid #0f6;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .title h1 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-            background: linear-gradient(135deg, #0f6, #0fa, #0f6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 8px #0f6;
-        }
-
-        .badge-vm {
-            background: #000000aa;
-            border: 1px solid #0f6;
-            padding: 5px 14px;
-            border-radius: 30px;
-            font-size: 0.7rem;
+        .panel-header {
+            background: #1a1f2e;
+            padding: 12px 16px;
+            border-bottom: 1px solid #00ffaa33;
             font-weight: bold;
-            color: #2effaa;
-        }
-
-        .main-panels {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            padding: 2rem;
-        }
-
-        .panel {
-            flex: 1;
-            min-width: 320px;
-            background: #030a0e80;
-            border-radius: 20px;
-            border: 1px solid #2affaa30;
-            padding: 1.2rem;
-        }
-
-        .panel-title {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            border-left: 4px solid #0f6;
-            padding-left: 12px;
-            margin-bottom: 1rem;
-            color: #8affcc;
-            display: flex;
-            justify-content: space-between;
+            font-size: 14px;
         }
 
         textarea {
             width: 100%;
-            background: #010a0c;
-            border: 1px solid #0f6;
-            border-radius: 14px;
-            padding: 1rem;
+            height: 400px;
+            background: #0a0e16;
+            border: none;
+            padding: 16px;
             font-family: 'Fira Code', monospace;
-            font-size: 0.8rem;
-            color: #bbffdd;
+            font-size: 12px;
+            color: #ccffdd;
             resize: vertical;
             outline: none;
         }
 
         textarea:focus {
-            border-color: #0fa;
-            box-shadow: 0 0 12px #0f6;
+            background: #0c101a;
         }
 
-        .code-input {
-            min-height: 320px;
-        }
-
-        .code-output {
-            min-height: 320px;
-            background: #010a0e;
-        }
-
-        .btn-cyber {
-            background: #0a1a15;
-            border: 1px solid #0f6;
-            padding: 8px 18px;
-            border-radius: 40px;
-            font-family: monospace;
-            font-weight: bold;
-            font-size: 0.75rem;
-            color: #afffdd;
-            cursor: pointer;
-            transition: 0.1s;
-            display: inline-flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .btn-cyber:hover {
-            background: #0f6;
-            color: #010a0c;
-            box-shadow: 0 0 14px #0f6;
-            border-color: #afffdd;
-        }
-
-        .btn-primary {
-            background: linear-gradient(95deg, #0b3727, #062013);
-            border-color: #2effaa;
-        }
-
-        .button-group {
+        /* Buttons */
+        .buttons {
+            padding: 16px;
             display: flex;
-            flex-wrap: wrap;
             gap: 12px;
-            margin-top: 20px;
+            flex-wrap: wrap;
+            border-top: 1px solid #00ffaa33;
         }
 
-        .alert-luraph {
-            margin-top: 15px;
-            font-size: 0.7rem;
-            background: #0a221a;
-            padding: 10px;
-            border-radius: 12px;
-            border-left: 3px solid #0f6;
-            color: #aaffdd;
-        }
-
-        footer {
-            padding: 1rem;
-            text-align: center;
-            border-top: 1px solid #0f660;
-            font-size: 0.65rem;
-            color: #4f9;
-        }
-
-        .toast-neon {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background: #0a2a1f;
-            border: 1px solid #0f6;
-            padding: 10px 20px;
-            border-radius: 40px;
+        button {
+            background: #1a2a2a;
+            border: 1px solid #00ffaa;
+            color: #00ffaa;
+            padding: 8px 20px;
+            border-radius: 6px;
             font-family: monospace;
-            z-index: 999;
-            color: #b3ffd9;
             font-weight: bold;
-            backdrop-filter: blur(12px);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #00ffaa;
+            color: #0a0c12;
+            box-shadow: 0 0 10px #00ffaa;
+        }
+
+        button.danger {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+
+        button.danger:hover {
+            background: #ff4444;
+            color: #0a0c12;
+            box-shadow: 0 0 10px #ff4444;
+        }
+
+        /* Info */
+        .info {
+            margin-top: 20px;
+            padding: 16px;
+            background: #11161f;
+            border: 1px solid #00ffaa33;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .info h3 {
+            color: #00ffaa;
+            margin-bottom: 8px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1a2a2a;
+            border: 1px solid #00ffaa;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-
-<div class="luraph-container">
-    <div class="header-luraph">
-        <div class="title">
-            <h1>🧬 LURAPH·STYLE VM OBFUSCATOR</h1>
-            <div style="font-size: 0.7rem; color: #2effaa;">advanced control flow · vm handlers · string encryption · junk injection</div>
-        </div>
-        <div class="badge-vm">🔻 VM PROTECTION v3.7 | HARDENED</div>
+<div class="container">
+    <div class="header">
+        <h1>🔒 LURAPH-STYLE OBFUSCATOR</h1>
+        <p>VM-Based Protection | Control Flow Flattening | String Encryption | Anti-Decompiler</p>
     </div>
 
-    <div class="main-panels">
+    <div class="grid">
         <div class="panel">
-            <div class="panel-title">
-                <span>📜 [ LUA SOURCE ]</span>
-                <span>RAW SCRIPT</span>
-            </div>
-            <textarea id="sourceLua" class="code-input" placeholder="-- Luraph style input
-local player = 'Hacker'
-function test(a,b)
-    return a + b
-end
-print('Hello from secure VM')
-for i=1,5 do
-    print(i)
-end"></textarea>
-            <div class="button-group">
-                <button id="obfuscateBtn" class="btn-cyber btn-primary">⚡ LURAPH OBFUSCATE</button>
-                <button id="exampleBtn" class="btn-cyber">📂 LOAD DEMO</button>
-                <button id="clearInputBtn" class="btn-cyber">🗑 CLEAR</button>
-            </div>
-            <div class="alert-luraph">
-                🔥 Teknik: Flow Flattening + VM Dispatcher + Opaque Predicates + String encoding + Dead Code + Random VM Handler.
-            </div>
-        </div>
-        <div class="panel">
-            <div class="panel-title">
-                <span>⚙️ [ OBFUSCATED VM OUTPUT ]</span>
-                <span>LURAPH ENCRYPTED</span>
-            </div>
-            <textarea id="resultArea" class="code-output" readonly placeholder="Hasil obfuscation dengan VM simulator (multi-layer)"></textarea>
-            <div class="button-group">
-                <button id="copyBtn" class="btn-cyber">📋 COPY CODE</button>
-                <button id="downloadBtn" class="btn-cyber">💾 DOWNLOAD .lua.txt</button>
-                <button id="clearResultBtn" class="btn-cyber">✖ CLEAR</button>
-            </div>
-            <div class="alert-luraph">
-                🧩 Nama file random 5 huruf (cth: Xy7Qz.lua.txt) | Kode final mengandung VM interpreter, case obf, junk jumps.
-            </div>
-        </div>
-    </div>
-    <footer>
-        🧬 LURAPH-STYLE VM | Bytecode virtualization + Control Flow Obfuscation + Anti-Decompiler Tricks
-    </footer>
-</div>
+            <div class="panel-header">📄 INPUT (LUA SCRIPT)</div>
+            <textarea id="inputScript" placeholder="-- Contoh script Lua
+local players = {'Alpha', 'Beta', 'Gamma'}
 
-<script>
-    // ============================================================
-    // ENHANCED VM OBFUSCATION (Luraph style)
-    // Menggabungkan:
-    // 1. String encryption + runtime decryption
-    // 2. Control Flow Flattening (switch-case dispatcher)
-    // 3. Junk code insertion (opaque predicates)
-    // 4. Variable renaming
-    // 5. VM handler simulation (custom instruction set)
-    // 6. Anti-debug / dummy loops
-    // ============================================================
-
-    // Helper: random string (variable name)
-    function randomVar(len = 6) {
-        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        let res = '';
-        for (let i = 0; i < len; i++) res += chars[Math.floor(Math.random() * chars.length)];
-        return res;
-    }
-
-    // Junk code generator (opaque predicates)
-    function generateJunkBlock(indent = '') {
-        const junkTypes = [
-            `if ${Math.random() > 0.5 ? 'true' : 'false'} then local _j = 0; for _i=1,3 do _j = _j + 1; end end`,
-            `local _x = (function() return ${Math.floor(Math.random() * 100)} end)()`,
-            `do local _a = string.char(${Math.floor(Math.random() * 26) + 65}); _a = _a .. 'x' end`,
-            `local _rand = math.random(1,10); if _rand > 0 then _rand = _rand + 1 end`,
-            `local _unused = {${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}}`
-        ];
-        return indent + junkTypes[Math.floor(Math.random() * junkTypes.length)] + ' ';
-    }
-
-    // Simple string encryption (XOR + base64-like but lua table)
-    function encryptStringLiterals(source) {
-        // Cari string literal sederhana (hanya yang double quote / single quote) -> ubah jadi loadstring/char array
-        // Simulasi: kita extract dan ganti dengan fungsi decrypt saat runtime.
-        // Tapi supaya kompatibel, kita enkrip setiap string menjadi tabel byte dan decrypt di vm.
-        // Di versi ini kita akan mengenkripsi semua string literal menjadi _G["\xNN"] style? 
-        // implementasi lebih advanced: konversi ke {byte array} + dec function.
-        // Untuk menghindari kompleksitas berlebih, kita tambahkan layer string encoding sederhana.
-        let encryptedSource = source;
-        const stringMatches = source.match(/(["'])(?:(?=(\\?))\2.)*?\1/g);
-        if (stringMatches) {
-            const uniqueStrings = [...new Set(stringMatches)];
-            const stringMap = new Map();
-            for (let str of uniqueStrings) {
-                const rawContent = str.slice(1, -1);
-                const encodedBytes = [];
-                for (let i = 0; i < rawContent.length; i++) {
-                    encodedBytes.push(rawContent.charCodeAt(i) ^ 0x55);
-                }
-                const decFunc = `(function() local t={${encodedBytes.join(',')}};local s='';for _,b in ipairs(t) do s=s..string.char(b~0x55);end;return s end)()`;
-                stringMap.set(str, decFunc);
-            }
-            for (let [original, encoded] of stringMap.entries()) {
-                encryptedSource = encryptedSource.split(original).join(encoded);
-            }
-        }
-        return encryptedSource;
-    }
-
-    // Control Flow Flattening simulation (mengubah fungsi sederhana menjadi dispatcher)
-    // Untuk demo, kita bungkus seluruh script dalam main VM loop.
-    // Ini versi Luraph-like: virtual instruction handler
-    function advancedLuraphObfuscate(sourceCode) {
-        // 1. String encryption layer
-        let step1 = encryptStringLiterals(sourceCode);
-        
-        // 2. Tambahkan junk code di awal dan acak
-        const junkHeader = generateJunkBlock('') + ' ' + generateJunkBlock('');
-        
-        // 3. Control flow flattening via VM dispatcher + instruction table.
-        //    Kita akan membuat VM yang mengeksekusi "bytecode" dari source asli.
-        //    Teknik: ambil source asli, enkrip sebagai string besar, lalu jalankan via loadstring di dalam VM.
-        //    tapi lebih Luraph: Kita bikin virtualized executor.
-        
-        // Metode: Enkode source asli ke dalam bentuk tabel instruksi (simulasi)
-        const originalBytes = new TextEncoder().encode(step1);
-        const keySeed = Math.floor(Math.random() * 256);
-        const encryptedChunks = [];
-        for (let i = 0; i < originalBytes.length; i++) {
-            encryptedChunks.push(originalBytes[i] ^ ((keySeed + i) & 0xFF));
-        }
-        
-        // Random VM register names
-        const vmTable = randomVar(5);
-        const vmIndex = randomVar(4);
-        const vmCode = randomVar(6);
-        const resultVar = randomVar(5);
-        const decryptor = randomVar(7);
-        
-        // Build final obfuscated script: VM that decrypts + executes original source with junk and opaque flow
-        const finalObfuscated = `--!VM: LURAPH-STYLE v3
-local ${vmTable} = {${encryptedChunks.join(',')}}
-local ${vmIndex} = 1
-local ${decryptor} = function(str, offset)
-    local out = {}
-    for i=1,#str do
-        out[i] = string.char(bit32.bxor(str[i], (offset + i - 1) % 256))
-    end
-    return table.concat(out)
-end
-${junkHeader}
-local function ${randomVar(6)}()
-    local ${vmCode} = ${decryptor}(${vmTable}, ${keySeed})
-    local ${resultVar} = loadstring(${vmCode})
-    if ${resultVar} then
-        ${resultVar}()
-    else
-        error("VM exec fail")
-    end
-end
-${generateJunkBlock('')}
-local function dispatcher()
-    local _state = 0
-    while _state ~= 99 do
-        if _state == 0 then
-            ${randomVar(4)}()
-            _state = ${Math.floor(Math.random() * 3) + 1}
-        elseif _state == 1 then
-            ${generateJunkBlock('')}
-            _state = 99
-        elseif _state == 2 then
-            dispatcher = nil
-            _state = 1
-        else
-            _state = 99
-        end
-    end
-end
-dispatcher()
-${generateJunkBlock('')}
---[[ protected ]]--`;
-        
-        // Tambahkan layer opaque predicate dan fake loops
-        let finalCode = finalObfuscated;
-        for (let i = 0; i < 3; i++) {
-            finalCode = finalCode.replace(/local function/g, `local ${randomVar(3)}_${i}=function`);
-            finalCode += `\n${generateJunkBlock('')}`;
-        }
-        return finalCode;
-    }
-    
-    // Enhanced version: Multiple VM Layers + fake control flow
-    function luraphStyleObfuscate(sourceCode) {
-        if (!sourceCode.trim()) return "-- empty source --";
-        try {
-            // First, basic string encryption and dead code injection
-            let intermediate = sourceCode;
-            // Tambahin junk code di tengah (simulasi)
-            const lines = intermediate.split('\n');
-            let processed = '';
-            for (let i = 0; i < lines.length; i++) {
-                processed += lines[i] + '\n';
-                if (i % 3 === 2 && lines[i].length > 5) {
-                    processed += generateJunkBlock('') + '\n';
-                }
-            }
-            // Random rename variable global (sederhana)
-            const varMapping = {};
-            const varRegex = /\b(local\s+)?([a-zA-Z_][a-zA-Z0-9_]*)\b/g;
-            let renamedCode = processed.replace(varRegex, (match, localKw, varName) => {
-                if (localKw) return match;
-                if (varName === 'print' || varName === 'string' || varName === 'table' || varName === 'math') return match;
-                if (!varMapping[varName]) varMapping[varName] = randomVar(6);
-                return varMapping[varName];
-            });
-            
-            // Terapkan string encryption lanjutan
-            let encryptedStrings = encryptStringLiterals(renamedCode);
-            
-            // VM + Control Flow Flattening + multi-layer obf
-            const finalVM = advancedLuraphObfuscate(encryptedStrings);
-            return finalVM;
-        } catch (e) {
-            console.error(e);
-            return `-- obfuscation error: ${e.message}\n${sourceCode}`;
-        }
-    }
-    
-    // Random 5 huruf untuk download
-    function generateRandom5() {
-        const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let r = '';
-        for (let i = 0; i < 5; i++) r += pool[Math.floor(Math.random() * pool.length)];
-        return r;
-    }
-    
-    // Toast notif
-    let toastTimer = null;
-    function showToast(msg, duration = 1700) {
-        const oldToast = document.querySelector('.toast-neon');
-        if (oldToast) oldToast.remove();
-        const div = document.createElement('div');
-        div.className = 'toast-neon';
-        div.innerText = msg;
-        document.body.appendChild(div);
-        if (toastTimer) clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => div.remove(), duration);
-    }
-    
-    // DOM Elements
-    const sourceTextarea = document.getElementById('sourceLua');
-    const resultTextarea = document.getElementById('resultArea');
-    const obfBtn = document.getElementById('obfuscateBtn');
-    const exampleBtn = document.getElementById('exampleBtn');
-    const clearInput = document.getElementById('clearInputBtn');
-    const clearResult = document.getElementById('clearResultBtn');
-    const copyBtn = document.getElementById('copyBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
-    
-    // Demo script advanced (mirip skenario real)
-    const DEMO_LUA = `--[[ Luraph demo: complex script ]]--
-local players = {"Alpha", "Beta", "Gamma"}
-local function calculate(x, y)
-    return (x * y) + (x - y)
+function greet(name)
+    return 'Hello, ' .. name .. '!'
 end
 
 for i, v in ipairs(players) do
-    local value = calculate(i, 10)
-    print(v .. " score: " .. value)
+    print(greet(v))
 end
 
-local secret = "vm_protected_zone"
-print("status: " .. secret)
-return { success = true }`;
+local secret = 'encrypted_string'
+print('Status: ' .. secret)"></textarea>
+            <div class="buttons">
+                <button id="obfuscateBtn">⚡ OBFUSCATE</button>
+                <button id="exampleBtn">📋 LOAD EXAMPLE</button>
+                <button id="clearInputBtn">🗑 CLEAR INPUT</button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">🔒 OBFUSCATED OUTPUT</div>
+            <textarea id="outputScript" readonly placeholder="Hasil obfuscation akan muncul di sini..."></textarea>
+            <div class="buttons">
+                <button id="copyBtn">📋 COPY</button>
+                <button id="downloadBtn">💾 DOWNLOAD .lua</button>
+                <button id="clearOutputBtn" class="danger">✖ CLEAR OUTPUT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="info">
+        <h3>🧬 LURAPH-STYLE PROTECTION FEATURES</h3>
+        <p>• Virtual Machine-based execution • Control Flow Flattening (switch dispatcher)<br>
+        • String literal encryption + runtime decryption • Random variable/function renaming<br>
+        • Junk code injection (opaque predicates) • Bitwise XOR encryption layers<br>
+        • Anti-decompiler tricks • Multi-layer VM simulation</p>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// LURAPH-STYLE OBFUSCATOR ENGINE
+// ============================================================
+
+// Helper: random string generator
+function randomStr(len) {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < len; i++) {
+        result += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return result;
+}
+
+// Helper: random number
+function randomNum(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Junk code generator (opaque predicates)
+function generateJunk() {
+    const junkList = [
+        `if ${randomNum(0, 1) == 1 ? 'true' : 'false'} then local _ = ${randomNum(1, 100)} end`,
+        `do local _x = string.char(${randomNum(65, 90)}) end`,
+        `local _unused = {${randomNum(1, 255)}, ${randomNum(1, 255)}, ${randomNum(1, 255)}}`,
+        `for _=1,${randomNum(1, 5)} do local _a = ${randomNum(1, 100)} end`,
+        `local _dummy = (function() return ${randomNum(1, 100)} end)()`
+    ];
+    return junkList[Math.floor(Math.random() * junkList.length)];
+}
+
+// String encryption (XOR with random key)
+function encryptString(str) {
+    if (!str || str.length < 2) return str;
+    const key = randomNum(1, 255);
+    const bytes = [];
+    for (let i = 0; i < str.length; i++) {
+        bytes.push(str.charCodeAt(i) ^ key);
+    }
+    const decFunc = `(function() local t={${bytes.join(',')}};local s='';local k=${key};for _,b in ipairs(t) do s=s..string.char(bit32.bxor(b,k)) end;return s end)()`;
+    return decFunc;
+}
+
+// Encrypt all string literals in code
+function encryptAllStrings(code) {
+    // Match double-quoted strings
+    let result = code;
+    const stringPattern = /"([^"\\]*(\\.[^"\\]*)*)"/g;
+    result = result.replace(stringPattern, (match) => {
+        if (match.length > 2) {
+            const content = match.slice(1, -1);
+            if (content.length > 0 && !content.includes('bit32') && !content.includes('function')) {
+                return encryptString(content);
+            }
+        }
+        return match;
+    });
+    return result;
+}
+
+// Rename variables and functions
+function renameIdentifiers(code) {
+    const usedNames = new Set();
+    const nameMap = new Map();
     
-    // set default demo
-    if (!sourceTextarea.value || sourceTextarea.value.trim() === "") {
-        sourceTextarea.value = DEMO_LUA;
+    const generateName = () => {
+        let name;
+        do {
+            name = randomStr(randomNum(4, 8));
+        } while (usedNames.has(name) || name === 'local' || name === 'function' || name === 'end');
+        usedNames.add(name);
+        return name;
+    };
+    
+    // Pattern untuk local variables dan function names
+    const patterns = [
+        /local\s+([a-zA-Z_][a-zA-Z0-9_]*)/g,
+        /function\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/g,
+        /(\s+)([a-zA-Z_][a-zA-Z0-9_]*)\s*=/g
+    ];
+    
+    let result = code;
+    patterns.forEach(pattern => {
+        result = result.replace(pattern, (match, ...args) => {
+            let varName = args[0];
+            if (!nameMap.has(varName)) {
+                nameMap.set(varName, generateName());
+            }
+            return match.replace(varName, nameMap.get(varName));
+        });
+    });
+    
+    // Replace all occurrences
+    for (let [oldName, newName] of nameMap) {
+        const regex = new RegExp(`\\b${oldName}\\b`, 'g');
+        result = result.replace(regex, newName);
     }
     
-    function performObfuscation() {
-        const src = sourceTextarea.value;
-        if (!src.trim()) {
-            resultTextarea.value = "-- [ERROR] Tidak ada source code untuk di-obfuscate!";
-            showToast("⚠️ Source kosong!", 1200);
-            return;
+    return result;
+}
+
+// Control Flow Flattening - Convert function to dispatcher
+function flattenControlFlow(code) {
+    // Simple implementation: wrap code in VM-like structure
+    const flattened = `local function _dispatch(state)
+    while state ~= 0 do
+        if state == 1 then
+            ${generateJunk()}
+            state = 2
+        elseif state == 2 then
+            ${generateJunk()}
+            state = 3
+        elseif state == 3 then
+            ${generateJunk()}
+            state = 0
+        else
+            break
+        end
+    end
+end
+_dispatch(1)`;
+    
+    return code + '\n' + flattened;
+}
+
+// Generate random VM table with encrypted bytecode
+function generateVMWrapper(code) {
+    const bytes = [];
+    for (let i = 0; i < code.length; i++) {
+        bytes.push(code.charCodeAt(i) ^ randomNum(1, 255));
+    }
+    
+    const xorKey = randomNum(1, 255);
+    const encryptedBytes = bytes.map(b => b ^ xorKey);
+    
+    const vmName = randomStr(6);
+    const keyName = randomStr(5);
+    const decryptName = randomStr(7);
+    const resultName = randomStr(6);
+    
+    const wrapper = `-- Protected by Luraph-Style Obfuscator v3.0
+local ${vmName} = {${encryptedBytes.join(',')}}
+local ${keyName} = ${xorKey}
+local ${decryptName} = function(t, k)
+    local out = {}
+    for i=1,#t do
+        out[i] = string.char(bit32.bxor(t[i], k))
+    end
+    return table.concat(out)
+end
+${generateJunk()}
+local ${resultName} = loadstring(${decryptName}(${vmName}, ${keyName}))
+if ${resultName} then
+    ${resultName}()
+else
+    error("VM Execution Failed")
+end
+${generateJunk()}
+--[[ End of protected block ]]--`;
+    
+    return wrapper;
+}
+
+// Generate fake functions (honey pot)
+function generateHoneyPot() {
+    const fakeFuncs = [];
+    for (let i = 0; i < randomNum(3, 6); i++) {
+        fakeFuncs.push(`local function ${randomStr(6)}() return ${randomNum(1, 999)} end`);
+    }
+    return fakeFuncs.join('\n');
+}
+
+// Anti-debug / anti-decompile tricks
+function antiDebugTricks() {
+    return `-- Anti-debug
+local _d = debug and debug.getinfo or nil
+if _d then
+    _d = nil
+    error("Protected environment")
+end
+${generateJunk()}`;
+}
+
+// Main obfuscation function (Luraph style)
+function luraphObfuscate(sourceCode) {
+    if (!sourceCode || sourceCode.trim() === '') {
+        return '-- Error: Empty source code';
+    }
+    
+    try {
+        let result = sourceCode;
+        
+        // Layer 1: String encryption
+        result = encryptAllStrings(result);
+        
+        // Layer 2: Variable renaming
+        result = renameIdentifiers(result);
+        
+        // Layer 3: Junk code injection (every few lines)
+        const lines = result.split('\n');
+        let withJunk = [];
+        for (let i = 0; i < lines.length; i++) {
+            withJunk.push(lines[i]);
+            if (i > 0 && i % randomNum(3, 6) === 0) {
+                withJunk.push(generateJunk());
+            }
         }
+        result = withJunk.join('\n');
+        
+        // Layer 4: Control flow flattening
+        result = flattenControlFlow(result);
+        
+        // Layer 5: Anti-debug tricks
+        result = antiDebugTricks() + '\n' + result;
+        
+        // Layer 6: Honey pot functions
+        result = generateHoneyPot() + '\n' + result;
+        
+        // Layer 7: VM wrapper (final layer)
+        result = generateVMWrapper(result);
+        
+        // Add header
+        const header = `--[[
+    Obfuscator v3.0
+    Protected at: ${new Date().toISOString()}
+    Type: VM-Based + Control Flow Flattening
+]]--
+${result}`;
+        
+        return header;
+        
+    } catch (err) {
+        return `-- Obfuscation Error: ${err.message}\n-- Original code:\n${sourceCode}`;
+    }
+}
+
+// ============================================================
+// UI HANDLERS
+// ============================================================
+
+// DOM elements
+const inputArea = document.getElementById('inputScript');
+const outputArea = document.getElementById('outputScript');
+const obfuscateBtn = document.getElementById('obfuscateBtn');
+const exampleBtn = document.getElementById('exampleBtn');
+const clearInputBtn = document.getElementById('clearInputBtn');
+const clearOutputBtn = document.getElementById('clearOutputBtn');
+const copyBtn = document.getElementById('copyBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+
+// Example scripts
+const examples = {
+    basic: `-- Basic Example
+local message = "Hello World"
+print(message)
+
+function add(a, b)
+    return a + b
+end
+
+print("5 + 3 = " .. add(5, 3))`,
+
+    advanced: `-- Advanced Example
+local players = {"Alpha", "Beta", "Gamma"}
+
+function processData(data)
+    local result = {}
+    for i, v in ipairs(data) do
+        result[i] = string.upper(v) .. "_PROCESSED"
+    end
+    return result
+end
+
+local processed = processData(players)
+for i, v in ipairs(processed) do
+    print("Player " .. i .. ": " .. v)
+end
+
+local secret_key = "X7K9M2P4Q8"
+local encrypted = string.char(bit32.bxor(string.byte(secret_key, 1), 42))
+print("Encrypted: " .. encrypted)`,
+
+    game: `-- Game Script Example
+local Game = {
+    name = "RPG Adventure",
+    version = "1.0",
+    players = {}
+}
+
+function Game:addPlayer(name, level)
+    table.insert(self.players, {
+        name = name,
+        level = level or 1,
+        exp = 0
+    })
+end
+
+function Game:levelUp(playerIndex)
+    local p = self.players[playerIndex]
+    if p then
+        p.level = p.level + 1
+        p.exp = 0
+        print(p.name .. " leveled up to " .. p.level)
+    end
+end
+
+Game:addPlayer("Warrior", 5)
+Game:addPlayer("Mage", 3)
+Game:levelUp(1)
+
+for i, p in ipairs(Game.players) do
+    print(p.name .. " - Level " .. p.level)
+end`
+};
+
+// Set default example
+inputArea.value = examples.advanced;
+
+// Toast notification
+function showToast(message, isError = false) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.style.borderColor = isError ? '#ff4444' : '#00ffaa';
+    toast.style.color = isError ? '#ff8888' : '#88ffcc';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// Obfuscate action
+function doObfuscate() {
+    const source = inputArea.value;
+    if (!source.trim()) {
+        showToast('❌ Error: Input source code is empty!', true);
+        return;
+    }
+    
+    showToast('⚡ Obfuscating... Please wait');
+    
+    // Simulate processing delay for better UX
+    setTimeout(() => {
         try {
-            const obfResult = luraphStyleObfuscate(src);
-            resultTextarea.value = obfResult;
-            showToast("✅ LURAPH OBFUSCATION SUCCESS", 1400);
+            const obfuscated = luraphObfuscate(source);
+            outputArea.value = obfuscated;
+            showToast('✅ Obfuscation completed!');
         } catch (err) {
-            resultTextarea.value = `--!! OBFUSCATION FAILED: ${err.message}\n-- Gunakan source yang valid.`;
-            showToast("❌ Gagal obfuscate", 1500);
+            showToast(`❌ Error: ${err.message}`, true);
+            outputArea.value = `-- Obfuscation failed\n-- ${err.message}`;
         }
+    }, 50);
+}
+
+// Copy to clipboard
+async function copyOutput() {
+    const text = outputArea.value;
+    if (!text.trim()) {
+        showToast('❌ Nothing to copy!', true);
+        return;
     }
-    
-    function downloadFile() {
-        const content = resultTextarea.value;
-        if (!content || content.includes("ERROR") && !content.includes("local")) {
-            showToast("Tidak ada hasil. Obfuscate dulu!", 1200);
-            return;
-        }
-        const randomName = generateRandom5();
-        const filename = `${randomName}.lua.txt`;
-        const blob = new Blob([content], {type: "text/plain"});
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        showToast(`💾 Download: ${filename}`, 1600);
-    }
-    
-    async function copyToClipboard() {
-        const text = resultTextarea.value;
-        if (!text.trim()) {
-            showToast("Tidak ada teks untuk disalin", 1000);
-            return;
-        }
+    try {
         await navigator.clipboard.writeText(text);
-        showToast("📋 Code tersalin ke clipboard", 1200);
+        showToast('📋 Copied to clipboard!');
+    } catch (err) {
+        showToast('❌ Failed to copy', true);
     }
-    
-    // event binding
-    obfBtn.addEventListener('click', performObfuscation);
-    exampleBtn.addEventListener('click', () => {
-        sourceTextarea.value = DEMO_LUA;
-        resultTextarea.value = '';
-        showToast("Demo script dimuat", 1000);
-    });
-    clearInput.addEventListener('click', () => { sourceTextarea.value = ''; });
-    clearResult.addEventListener('click', () => { resultTextarea.value = ''; });
-    copyBtn.addEventListener('click', copyToClipboard);
-    downloadBtn.addEventListener('click', downloadFile);
-    
-    // Auto generate on first load
-    window.addEventListener('load', () => {
-        if (sourceTextarea.value.trim() !== "" && resultTextarea.value.trim() === "") {
-            setTimeout(performObfuscation, 120);
-        }
-    });
+}
+
+// Download as .lua file
+function downloadOutput() {
+    const text = outputArea.value;
+    if (!text.trim()) {
+        showToast('❌ Nothing to download!', true);
+        return;
+    }
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+    a.download = `obfuscated_${timestamp}.lua`;
+    a.href = url;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('💾 File downloaded!');
+}
+
+// Load example
+let exampleIndex = 0;
+const exampleKeys = Object.keys(examples);
+function loadExample() {
+    const currentExample = examples[exampleKeys[exampleIndex % exampleKeys.length]];
+    inputArea.value = currentExample;
+    outputArea.value = '';
+    showToast(`📂 Loaded: ${exampleKeys[exampleIndex % exampleKeys.length]} example`);
+    exampleIndex++;
+}
+
+// Clear functions
+function clearInput() {
+    inputArea.value = '';
+    showToast('🗑 Input cleared');
+}
+
+function clearOutput() {
+    outputArea.value = '';
+    showToast('🗑 Output cleared');
+}
+
+// Event listeners
+obfuscateBtn.addEventListener('click', doObfuscate);
+exampleBtn.addEventListener('click', loadExample);
+clearInputBtn.addEventListener('click', clearInput);
+clearOutputBtn.addEventListener('click', clearOutput);
+copyBtn.addEventListener('click', copyOutput);
+downloadBtn.addEventListener('click', downloadOutput);
+
+// Auto-obfuscate on load with small delay
+setTimeout(() => {
+    if (inputArea.value.trim() && !outputArea.value.trim()) {
+        doObfuscate();
+    }
+}, 500);
+
+// Keyboard shortcuts
+inputArea.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        doObfuscate();
+    }
+});
 </script>
 </body>
 </html>
