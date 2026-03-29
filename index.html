@@ -2,131 +2,489 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Key Generator System - Premium Access</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CYBER VAULT · Lua VM Hard Obfuscator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 20% 30%, #0a0c12, #030507);
+            font-family: 'Share Tech Mono', 'Courier New', 'Fira Code', monospace;
+            min-height: 100vh;
+            padding: 1.8rem;
+            position: relative;
+            color: #b4ffd6;
+        }
+
+        /* GARIS CYBER + SCANLINE */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0, 255, 170, 0.02) 0px, rgba(0, 255, 170, 0.02) 2px, transparent 2px, transparent 6px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .cyber-container {
+            max-width: 1500px;
+            margin: 0 auto;
+            background: rgba(2, 8, 18, 0.65);
+            backdrop-filter: blur(12px);
+            border: 1.5px solid #0ff3b0;
+            box-shadow: 0 0 18px rgba(0, 255, 170, 0.2), inset 0 0 12px rgba(0, 255, 200, 0.05);
+            border-radius: 28px;
+            overflow: hidden;
+            transition: all 0.2s;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* header neon */
+        .cyber-header {
+            padding: 1.2rem 2rem;
+            background: #010a14cc;
+            border-bottom: 2px solid #0ff3b0;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .title-glow h1 {
+            font-size: 1.9rem;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #aaffdd, #0fffb0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 5px #0ff3b080;
+        }
+        .title-glow p {
+            font-size: 0.7rem;
+            color: #6bffc3;
+            letter-spacing: 1px;
+            word-break: keep-all;
+        }
+        .badge-crypto {
+            font-family: monospace;
+            background: #000000aa;
+            padding: 6px 12px;
+            border-radius: 40px;
+            border: 1px solid #0ff3b0;
+            font-size: 0.7rem;
+            color: #2effbc;
+        }
+
+        /* 2 kolom utama */
+        .cyber-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            padding: 2rem 2rem 1.8rem;
+        }
+        .panel {
+            flex: 1;
+            min-width: 280px;
+            background: #03080f70;
+            border-radius: 20px;
+            border: 1px solid #1fba8a40;
+            backdrop-filter: blur(4px);
+            padding: 1.2rem;
+            transition: 0.2s;
+        }
+        .panel-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #0ff3b0;
+            padding-left: 12px;
+            color: #b3ffdf;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        textarea {
+            width: 100%;
+            background: #030b10;
+            border: 1px solid #2affb2;
+            border-radius: 16px;
+            padding: 1rem;
+            font-family: 'Fira Code', 'Share Tech Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.45;
+            color: #d2ffec;
+            resize: vertical;
+            outline: none;
+            transition: 0.2s;
+        }
+        textarea:focus {
+            border-color: #0fffb0;
+            box-shadow: 0 0 12px #0ff3b070;
+        }
+        .code-input {
+            min-height: 300px;
+        }
+        .code-output {
+            min-height: 300px;
+            background: #010b12;
+        }
+
+        /* tombol2 industrial */
+        .button-cyber {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #07161f;
+            border: 1px solid #2effbc;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaffdd;
+            cursor: pointer;
+            transition: 0.1s linear;
+            box-shadow: 0 0 3px #0ff3b0;
+        }
+        .button-cyber:hover {
+            background: #0ff3b020;
+            color: #ffffff;
+            border-color: #0fffb0;
+            box-shadow: 0 0 12px #0fffb070;
+            transform: translateY(-1px);
+        }
+        .button-primary {
+            background: linear-gradient(95deg, #0b3b2c, #0a2a1f);
+            border-color: #2effbc;
+            text-shadow: 0 0 3px #0affb0;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 18px;
+        }
+        .download-icon {
+            font-size: 1rem;
+        }
+        footer {
+            padding: 1rem 2rem;
+            font-size: 0.65rem;
+            text-align: center;
+            border-top: 1px dashed #2affb050;
+            color: #4b9b7a;
+            background: #01070e80;
+            font-family: monospace;
+        }
+        .alert-cyber {
+            margin-top: 12px;
+            font-size: 0.7rem;
+            background: #0b2a1e40;
+            border-radius: 14px;
+            padding: 8px 12px;
+            border-left: 3px solid #0ff3b0;
+            color: #b2f0cf;
+        }
+        @media (max-width: 800px) {
+            body { padding: 1rem; }
+            .cyber-grid { padding: 1.2rem; }
+        }
+        .glitch-text {
+            animation: flicker 3s infinite;
+        }
+        @keyframes flicker {
+            0% { opacity: 1; text-shadow: 0 0 2px #0ff; }
+            50% { opacity: 0.95; text-shadow: 0 0 6px #0f0; }
+            100% { opacity: 1; }
+        }
+        .copy-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #0f2126;
+            border: 1px solid #2effbc;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            backdrop-filter: blur(8px);
+            z-index: 999;
+            transition: 0.2s;
+            color: #c6ffe6;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <div class="header">
-                <div class="icon-wrapper">
-                    <i class="fas fa-key"></i>
-                </div>
-                <h1>Key Generator System</h1>
-                <p>Generate & Manage Your Access Keys</p>
-            </div>
 
-            <div class="key-section">
-                <div class="key-display">
-                    <div class="key-label">
-                        <i class="fas fa-lock"></i>
-                        <span>Your Generated Key</span>
-                    </div>
-                    <div class="key-value" id="generatedKey">
-                        <span class="placeholder">Click Generate to create key</span>
-                    </div>
-                    <div class="key-actions">
-                        <button id="copyKeyBtn" class="action-btn copy-btn" disabled>
-                            <i class="fas fa-copy"></i>
-                            <span>Copy</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="duration-section">
-                    <div class="duration-label">
-                        <i class="far fa-clock"></i>
-                        <span>Key Validity Duration</span>
-                    </div>
-                    <div class="duration-options">
-                        <button class="duration-btn" data-days="1">1 Day</button>
-                        <button class="duration-btn" data-days="3">3 Days</button>
-                        <button class="duration-btn" data-days="7">7 Days</button>
-                        <button class="duration-btn" data-days="30">30 Days</button>
-                        <button class="duration-btn" data-days="0">Permanent</button>
-                    </div>
-                    <div class="selected-duration" id="selectedDuration">
-                        <i class="fas fa-info-circle"></i>
-                        <span id="durationText">No duration selected</span>
-                    </div>
-                </div>
-
-                <div class="expiry-info" id="expiryInfo" style="display: none;">
-                    <div class="expiry-card">
-                        <i class="fas fa-hourglass-half"></i>
-                        <div class="expiry-details">
-                            <span class="expiry-label">Key Expires On:</span>
-                            <span class="expiry-date" id="expiryDate"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="button-group">
-                    <button id="generateKeyBtn" class="btn btn-primary">
-                        <i class="fas fa-sync-alt"></i>
-                        Generate Key
-                    </button>
-                    <button id="resetKeyBtn" class="btn btn-secondary">
-                        <i class="fas fa-trash-alt"></i>
-                        Reset Key
-                    </button>
-                </div>
-            </div>
-
-            <div class="target-section">
-                <div class="target-header">
-                    <i class="fas fa-link"></i>
-                    <h3>Target Link Integration</h3>
-                </div>
-                <div class="target-content">
-                    <p class="target-desc">After generating your key, you'll be redirected to access the content through our secure gateway.</p>
-                    
-                    <div class="link-options">
-                        <div class="link-option active" data-type="linkvertise">
-                            <i class="fab fa-linkvertise"></i>
-                            <span>Linkvertise</span>
-                        </div>
-                        <div class="link-option" data-type="shorte">
-                            <i class="fas fa-shortcode"></i>
-                            <span>Shorte.st</span>
-                        </div>
-                        <div class="link-option" data-type="custom">
-                            <i class="fas fa-globe"></i>
-                            <span>Custom Link</span>
-                        </div>
-                    </div>
-
-                    <div class="custom-link-input" id="customLinkInput" style="display: none;">
-                        <input type="text" id="customUrl" placeholder="Enter your custom URL (e.g., https://example.com)" class="custom-input">
-                    </div>
-
-                    <div class="target-link-display">
-                        <div class="link-info">
-                            <i class="fas fa-arrow-right"></i>
-                            <span id="targetLinkText">Linkvertise Gateway</span>
-                        </div>
-                        <button id="visitTargetBtn" class="btn-target" disabled>
-                            <i class="fas fa-external-link-alt"></i>
-                            Access Content (Requires Key)
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="toast-message" id="toast">
-                <i class="fas fa-check-circle"></i>
-                <span id="toastMessage">Message</span>
-            </div>
+<div class="cyber-container">
+    <div class="cyber-header">
+        <div class="title-glow">
+            <h1>⌨️ HVM_OBF · [LUA ENCRYPT]</h1>
+            <p>HARD VM OBFUSCATOR | XOR + RANDOM KEY + LOADSTRING WRAPPER</p>
         </div>
-
-        <div class="footer">
-            <p>&copy; 2024 Key Generator System | Secure Access Management</p>
+        <div class="badge-crypto">
+            ⚡ CYBER LAYER v2.0
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <div class="cyber-grid">
+        <!-- PANEL KIRI : SOURCE -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>📡 [ SOURCE CODE ]</span>
+                <span style="font-size:10px;">raw lua script</span>
+            </div>
+            <textarea id="sourceLua" class="code-input" placeholder="# --[ ENTER YOUR LUA SCRIPT ]--\nprint('SYSTEM ONLINE')\nlocal payload = 'HACK THE PLANET'\nfor i=1,3 do\n  print(payload .. ' ' .. i)\nend"></textarea>
+            <div class="button-group">
+                <button id="obfuscateBtn" class="button-cyber button-primary">⚡ OBFUSCATE & GENERATE</button>
+                <button id="clearInputBtn" class="button-cyber">🗑 CLEAR</button>
+                <button id="exampleBtn" class="button-cyber">📂 LOAD DEMO</button>
+            </div>
+            <div class="alert-cyber">
+                🔒 XOR + key 16 random chars → tabel v1 + key v2 → fungsi dekrip (bit32.bxor) → loadstring(). Hasil akhir adalah kode Lua siap jalankan.
+            </div>
+        </div>
+
+        <!-- PANEL KANAN : HASIL OBFUSCATE + DOWNLOAD -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>🔻 [ OBFUSCATED OUTPUT ]</span>
+                <span style="font-size:9px;">▸ final vm byte wrapper</span>
+            </div>
+            <textarea id="resultArea" class="code-output" readonly placeholder="[ hasil obfuscate akan muncul di sini ]&#10;Klik tombol OBFUSCATE..."></textarea>
+            <div class="button-group">
+                <button id="copyBtn" class="button-cyber">📋 COPY TEXT</button>
+                <button id="downloadBtn" class="button-cyber">💾 DOWNLOAD .lua.txt</button>
+                <button id="clearResultBtn" class="button-cyber">✖ CLEAR OUTPUT</button>
+            </div>
+            <div class="alert-cyber">
+                🧬 Nama file random 5 huruf (contoh: KjgUf.lua.txt) — setiap download unik.
+            </div>
+        </div>
+    </div>
+    <footer>
+        ⚙️ ENCRYPTION CORE : XOR CYCLIC | key length 16 | v3() decryptor + loadstring | anti static analysis layer<br>
+        🌐 fully client-side — kode tidak meninggalkan server | theme: CRYPTO NIGHTMARE
+    </footer>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // 1. Fungsi hardVMObfuscate (persis dari spec, tanpa modifikasi logika)
+    // --------------------------------------------------------------
+    function hardVMObfuscate(sourceCode) {
+        const bytes = new TextEncoder().encode(sourceCode);
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let key = '';
+        for (let i = 0; i < 16; i++) {
+            key += chars[Math.floor(Math.random() * chars.length)];
+        }
+        const encrypted = [];
+        for (let i = 0; i < bytes.length; i++) {
+            const k = key.charCodeAt(i % key.length);
+            encrypted.push(bytes[i] ^ k);
+        }
+        // escape key untuk string literal Lua (tapi key hanya alnum, aman, tetap escape petik ganda)
+        const safeKey = key.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+        const encryptedNumbers = encrypted.join(',');
+        const luaCode = `local v1 = {${encryptedNumbers}}
+local v2 = "${safeKey}"
+local function v3()
+local c = ""
+local kl = #v2
+for i, b in ipairs(v1) do
+local k = string.byte(v2, (i - 1) % kl + 1)
+c = c .. string.char(bit32.bxor(b, k))
+end
+return c
+end
+loadstring(v3())()`;
+        return luaCode;
+    }
+
+    // --------------------------------------------------------------
+    // 2. Helper: generate random 5 huruf (hanya huruf besar + kecil + angka? tapi sesuai contoh KjgUf)
+    //    bisa mengandung huruf besar/kecil & angka? contoh "KjgUf" huruf campuran. 
+    //    biar lebih variatif: A-Z a-z 0-9 (5 karakter)
+    // --------------------------------------------------------------
+    function generateRandom5() {
+        const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < 5; i++) {
+            result += pool[Math.floor(Math.random() * pool.length)];
+        }
+        return result;
+    }
+
+    // --------------------------------------------------------------
+    // 3. DOM elements
+    // --------------------------------------------------------------
+    const sourceTextarea = document.getElementById('sourceLua');
+    const resultTextarea = document.getElementById('resultArea');
+    const obfuscateBtn = document.getElementById('obfuscateBtn');
+    const clearInputBtn = document.getElementById('clearInputBtn');
+    const clearResultBtn = document.getElementById('clearResultBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const exampleBtn = document.getElementById('exampleBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    // DEMO script (lebih 'cyber' vibe)
+    const DEMO_SCRIPT = `--[ CYBER INIT ]--
+local core = {
+    version = "7.3.1",
+    env = "LUA_VM"
+}
+
+function xor_simple(data, key)
+    local res = {}
+    for i=1,#data do
+        res[i] = string.char(bit32.bxor(string.byte(data,i), key))
+    end
+    return table.concat(res)
+end
+
+local secret_msg = "access_granted::VM_OBF_ACTIVE"
+for i=1,3 do
+    print("🔹 handshake " .. i)
+end
+print("> status: " .. secret_msg)
+--[[ protected payload ]]--
+return core`;
+
+    // Set contoh awal jika kosong atau default (biar langsung ada isi keren)
+    if (!sourceTextarea.value || sourceTextarea.value.trim() === "") {
+        sourceTextarea.value = DEMO_SCRIPT;
+    }
+
+    // Fungsi untuk melakukan obfuscate dan update resultArea
+    function performObfuscate() {
+        let sourceCode = sourceTextarea.value;
+        if (!sourceCode.trim()) {
+            resultTextarea.value = "--!! ERROR: source code kosong. Masukkan kode Lua !!--";
+            return;
+        }
+        try {
+            const obfResult = hardVMObfuscate(sourceCode);
+            resultTextarea.value = obfResult;
+        } catch (err) {
+            console.error(err);
+            resultTextarea.value = `-- OBFUSCATION FAILED :(\n-- ${err.message}\n-- pastikan input teks valid (UTF-8)`;
+        }
+    }
+
+    // download hasil dengan random nama 5 huruf + ekstensi .lua.txt
+    function downloadResult() {
+        const content = resultTextarea.value;
+        if (!content || content.trim() === "" || content.includes("ERROR") && !content.includes("local v1")) {
+            // tampilkan toast atau notifikasi simple
+            showFloatingMessage("⚠️ TIDAK ADA HASIL! Lakukan obfuscate dulu.", 1800);
+            return;
+        }
+        const randomName = generateRandom5();   // 5 huruf/angka acak
+        const filename = `${randomName}.lua.txt`;   // format sesuai contoh "KjgUf.lua.txt"
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        showFloatingMessage(`✅ TERSIMPAN → ${filename}`, 1500);
+    }
+
+    // floating notif ala cyber
+    let toastTimeout = null;
+    function showFloatingMessage(msg, duration = 1500) {
+        let existingToast = document.querySelector('.copy-toast');
+        if(existingToast) existingToast.remove();
+        const toast = document.createElement('div');
+        toast.className = 'copy-toast';
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        if(toastTimeout) clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+            if(toast) toast.remove();
+        }, duration);
+    }
+
+    // copy to clipboard
+    async function copyResult() {
+        const text = resultTextarea.value;
+        if (!text.trim()) {
+            showFloatingMessage("⚠️ Tidak ada output untuk disalin.", 1200);
+            return;
+        }
+        try {
+            await navigator.clipboard.writeText(text);
+            showFloatingMessage("📋 OBFUSCATED CODE TERSALIN!", 1200);
+        } catch (err) {
+            showFloatingMessage("Gagal copy: " + err, 1500);
+        }
+    }
+
+    // event listeners
+    obfuscateBtn.addEventListener('click', performObfuscate);
+    clearInputBtn.addEventListener('click', () => {
+        sourceTextarea.value = '';
+        sourceTextarea.focus();
+    });
+    clearResultBtn.addEventListener('click', () => {
+        resultTextarea.value = '';
+    });
+    copyBtn.addEventListener('click', copyResult);
+    downloadBtn.addEventListener('click', downloadResult);
+    exampleBtn.addEventListener('click', () => {
+        sourceTextarea.value = DEMO_SCRIPT;
+        resultTextarea.value = '';   // biar user sadar perlu obfuscate ulang
+        showFloatingMessage("📡 Demo script termuat. Klik OBFUSCATE!", 1300);
+    });
+
+    // tambahan: jika user menekan Ctrl+Enter di source -> obfuscate
+    sourceTextarea.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            performObfuscate();
+        }
+    });
+
+    // Saat load pertama kali, jika result masih kosong dan source ada isi -> generate hasil otomatis?
+    // Biar langsung keliatan power nya, namun sesuai permintaan "bisa di download hasilnya" dan tema cyber
+    // Kita tampilkan hasil otomatis saat load pertama kali (tapi tidak menggangu user experience)
+    window.addEventListener('load', () => {
+        if (sourceTextarea.value.trim() !== "" && resultTextarea.value.trim() === "") {
+            setTimeout(() => {
+                performObfuscate();
+            }, 100);
+        }
+    });
+
+    // sedikit tambahan efek pseudo: glitch pada header random
+    setInterval(() => {
+        const h1 = document.querySelector('.title-glow h1');
+        if(h1 && Math.random() < 0.2) {
+            h1.style.textShadow = "0 0 6px #0ff, 0 0 2px #2effbc";
+            setTimeout(() => { h1.style.textShadow = ""; }, 150);
+        }
+    }, 2800);
+    
+    // dynamic tooltip manual
+    console.log("[VM OBF] ready — random download name (5 chars) setiap klik download");
+</script>
 </body>
-  </html>
+</html>
